@@ -23,12 +23,14 @@ class Application @Inject()(ws: WSClient) extends Controller {
   implicit val actorSystem = ActorSystem("ReactiveKafka")
   implicit val materializer = ActorMaterializer()
 
+  import play.api.Play.current
+
   val kafka = new ReactiveKafka()
   val publisher: Publisher[StringKafkaMessage] = kafka.consume(ConsumerProperties(
-    zooKeeperHost = "localhost:2181",
-    brokerList = "localhost:9093",
-    topic ="test",
-    groupId = "groupname",
+    zooKeeperHost = current.configuration.getString("zooKeeperHost").get,
+    brokerList = current.configuration.getString("brokerList").get,
+    topic = current.configuration.getString("topic").get,
+    groupId = current.configuration.getString("groupId ").get,
     decoder = new StringDecoder()
   ))
 
