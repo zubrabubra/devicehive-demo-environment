@@ -30,7 +30,7 @@ class Application @Inject()(ws: WSClient) extends Controller {
     zooKeeperHost = current.configuration.getString("zooKeeperHost").get,
     brokerList = current.configuration.getString("brokerList").get,
     topic = current.configuration.getString("topic").get,
-    groupId = current.configuration.getString("groupId ").get,
+    groupId = current.configuration.getString("groupId").get,
     decoder = new StringDecoder()
   ))
 
