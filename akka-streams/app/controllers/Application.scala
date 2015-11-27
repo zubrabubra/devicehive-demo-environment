@@ -9,14 +9,12 @@ import akka.stream.scaladsl.{Sink, Source}
 import com.softwaremill.react.kafka.ConsumerProperties
 import com.softwaremill.react.kafka.KafkaMessages._
 import com.softwaremill.react.kafka.ReactiveKafka
-import org.reactivestreams.{Subscriber, Publisher}
+import org.reactivestreams.{Subscription, Subscriber, Publisher}
 import play.api._
 import play.api.libs.iteratee.{Concurrent, Enumerator, Iteratee}
 import play.api.libs.streams.Streams
 import play.api.libs.ws._
 import play.api.mvc._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application @Inject()(ws: WSClient) extends Controller {
 
@@ -34,11 +32,18 @@ class Application @Inject()(ws: WSClient) extends Controller {
     decoder = new StringDecoder()
   ))
 
+  val (publicOut, publicChannel) = Concurrent.broadcast[String]
+
+  Source(publisher).runForeach { m =>
+    publicChannel.push(m.message())
+  }
+
   def notifications = WebSocket.using[String] {
-    request =>
-      Logger.info(s"notifications, client connected.")
-      val outEnumerator = Streams.publisherToEnumerator(publisher).map(_.message())
-      (Iteratee.ignore[String], outEnumerator)
+  request =>
+  val (privateOut, _) = Concurrent.broadcast[String]
+// val outEnumerator: Enumerator[String] = Streams.publisherToEnumerator(publisher).map(_.message())
+ val out = Enumerator.interleave(publicOut, privateOut)
+  (Iteratee.ignore[String], out)
   }
 
 }
