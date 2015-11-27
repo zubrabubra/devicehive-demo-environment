@@ -2,15 +2,12 @@ package com.dataart.poc.cw
 
 import java.util.Properties
 
-import _root_.kafka.producer.{KeyedMessage, ProducerConfig}
+import _root_.kafka.producer.{Producer, KeyedMessage, ProducerConfig}
 import com.lambdaworks.jacks.JacksMapper
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.kafka._
 import org.apache.spark.sql._
-import org.cloudera.spark.streaming.kafka.KafkaWriter._
-import org.apache.spark.sql.SQLImplicits
 
 object DataAggregator {
 
@@ -20,14 +17,13 @@ object DataAggregator {
   val sqlContext = new SQLContext(sc)
   val ssc = new StreamingContext(sc, Seconds(2))
 
-  import sqlContext.implicits._
-
-
   val zkUrl = "127.0.0.1:2181"
   val notificationName = sc.broadcast(s"notificationTemperaturePressure")
 
   val messages = KafkaUtils.createStream(ssc, zkUrl, "country-aggregator-group", Map("device_notification" -> 1))
   val msgs = messages.window(Seconds(30))
+
+  val kafkaProducer = new KafkaProducer(List("127.0.0.1:9092"), "agg")
 
   case class ParsedNotification(deviceGuid: String, notification: String, timestamp: String, parameters: String)
   case class Notification(deviceGuid: String, timestamp: String, mac: String, uuid:String, value: Double)
@@ -51,21 +47,35 @@ object DataAggregator {
       x._3.get("value").get.asInstanceOf[Double])
   )
 
-  val props = new Properties()
-
-  props.put("metadata.broker.list", "127.0.0.1:9092")
-  props.put("serializer.class", "kafka.serializer.StringEncoder")
-  //TODO props.put("partitioner.class", "example.producer.SimplePartitioner")
-  props.put("request.required.acks", "1")
-
-  val config = new ProducerConfig(props)
-
-  parsedDeviceMessages.writeToKafka(props, x => new KeyedMessage[Int, String]("agg", 1, x.toString))
+  parsedDeviceMessages foreachRDD { rdd =>
+    val producer = kafkaProducer
+    rdd foreachPartition { part =>
+      part.foreach(msg => producer.send(msg.deviceGuid.getBytes()))
+    }
+  }
 
   ssc.start()
 
   println("started, awaiting termination")
-
   ssc.awaitTermination()
+
+  case class KafkaProducer( val brokers: List[String],
+                            val topic: String) {
+
+    @transient
+    private lazy val producer = {
+      val props = new Properties()
+      props.put("metadata.broker.list", brokers.mkString(","))
+      props.put("serializer.class", "kafka.serializer.DefaultEncoder")
+      props.put("request.required.acks", "1")
+      val config = new ProducerConfig(props)
+      new Producer[String, Array[Byte]](config)
+    }
+
+    def send(message: Array[Byte]) {
+      producer.send(new KeyedMessage(topic, message))
+    }
+
+  }
 
 }
