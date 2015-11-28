@@ -25,6 +25,7 @@ object DataAggregator  extends App with LazyLogging {
   val msgs = messages.window(Seconds(30))
 
   val kafkaProducer = new KafkaProducer(List("127.0.0.1:9092"), "agg")
+  val kafkaBroadcasted = ssc.sparkContext.broadcast(kafkaProducer)
 
   case class ParsedNotification(deviceGuid: String, notification: String, timestamp: String, parameters: String)
   case class Notification(deviceGuid: String, timestamp: String, mac: String, uuid:String, value: Double)
@@ -46,12 +47,10 @@ object DataAggregator  extends App with LazyLogging {
       x._3.get("mac").get.asInstanceOf[String],
       x._3.get("uuid").get.asInstanceOf[String],
       x._3.get("value").get.asInstanceOf[Double])
-  )
-
-  parsedDeviceMessages foreachRDD { rdd =>
-    val producer = kafkaProducer
+  ) foreachRDD { rdd =>
+    val producer = kafkaBroadcasted
     rdd foreachPartition { part =>
-      part.foreach(msg => producer.send(msg.deviceGuid.getBytes()))
+      part.foreach(msg => producer.value.send(msg.deviceGuid.getBytes()))
     }
   }
 
