@@ -14,7 +14,9 @@ lazy val root = (project in file(".")).
       "org.apache.spark" %% "spark-core" % "1.5.1" % "provided",
       "org.apache.spark" %% "spark-streaming" % "1.5.1" % "provided",
       "org.apache.spark" %% "spark-sql" % "1.5.1" % "provided",
-      "org.apache.spark" %% "spark-streaming-kafka" % "1.5.1" % "provided",
+      "org.apache.spark" %% "spark-streaming-kafka" % "1.5.1"
+        exclude("org.spark-project.spark", "unused"),
+
       "com.amazonaws" % "aws-java-sdk-s3" % "1.9.37",
 
       "org.apache.hadoop" % "hadoop-aws" % "2.6.0"

@@ -4,12 +4,13 @@ import java.util.Properties
 
 import _root_.kafka.producer.{Producer, KeyedMessage, ProducerConfig}
 import com.lambdaworks.jacks.JacksMapper
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import org.apache.spark._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.kafka._
 import org.apache.spark.sql._
 
-object DataAggregator {
+object DataAggregator  extends App with LazyLogging {
 
 
   val conf = new SparkConf().setMaster("local[2]").setAppName("TemperaturePressureMonitor")
