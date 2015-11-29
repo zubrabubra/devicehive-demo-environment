@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
       ws->poll(-1);
 
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
-        ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': '23.3', 'pressure': '764', 'units': 'SI', 'county': '"+deviceCounty.str()+"' } }}");
+        ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': '23.3', 'pressure': '764', 'units': 'SI', 'county': '"+deviceCounty+"' } }}");
         ws->poll(-1);
         ws->dispatch( [](const std::string & message) {
             printf(">>A>> %s\n", message.c_str());
