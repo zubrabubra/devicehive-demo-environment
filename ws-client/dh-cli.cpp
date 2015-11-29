@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
 {
   
   if (argc == 1) {
-    printf("dh-cli <number of forks> <server name> <port number> <url end point> <guid/name> <count>\n");
+    printf("dh-cli <number of forks> <server name> <port number> <url end point> <guid/name> <count> <county id>\n");
     return 1;
   }
 
@@ -40,12 +40,16 @@ int main(int argc, char ** argv)
       std::ostringstream uuid_buf;
       uuid_buf << argv[5] << forkCount;
       std::string deviceUuid = uuid_buf.str();
+
+      std::ostringstream county_buf;
+      county_buf << argv[6];
+      std::string deviceCounty = county_buf.str();
       
       ws->send("{'action': 'device/save', 'deviceId': '"+deviceUuid+"', 'device': {'deviceGuid': '"+deviceUuid+"', 'name': '"+deviceUuid+"', 'deviceClass': { 'name': 'Rest Device from Authorized User', 'version': '1.0'}, 'network' : { 'name' : 'VirtualLed Sample Network' }, 'status' : 'online', 'data': {'jsonString': 'string'}, 'blocked': false}}");
       ws->poll(-1);
 
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
-        ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'TemperaturePressureMonitor', 'parameters': { 'temp': '23.3', 'pressure': '764', 'units': 'SI' } }}");
+        ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': '23.3', 'pressure': '764', 'units': 'SI', 'county': '"+deviceCounty.str()+"' } }}");
         ws->poll(-1);
         ws->dispatch( [](const std::string & message) {
             printf(">>A>> %s\n", message.c_str());
