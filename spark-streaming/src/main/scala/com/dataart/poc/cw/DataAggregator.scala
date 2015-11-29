@@ -12,7 +12,6 @@ import org.apache.spark.sql._
 
 object DataAggregator  extends App with LazyLogging {
 
-
   val conf = new SparkConf().setMaster("local[2]").setAppName("TemperaturePressureMonitor")
   val sc = new SparkContext(conf)
   val sqlContext = new SQLContext(sc)
@@ -28,7 +27,8 @@ object DataAggregator  extends App with LazyLogging {
   val kafkaBroadcasted = ssc.sparkContext.broadcast(kafkaProducer)
 
   case class ParsedNotification(deviceGuid: String, notification: String, timestamp: String, parameters: String)
-  case class Notification(deviceGuid: String, timestamp: String, mac: String, uuid:String, value: Double)
+  case class Notification(deviceGuid: String, timestamp: String, county: Int, pressure: Double, temperature: Double)
+  case class NotificationAggregate(county: Int, count: Int, pressure: Double, temperature: Double)
 
   val parsedDeviceMessages = msgs.map(
     msg => JacksMapper.readValue[Map[String, Any]](msg._2)
@@ -44,13 +44,20 @@ object DataAggregator  extends App with LazyLogging {
     nmap => (nmap.deviceGuid, nmap.timestamp, JacksMapper.readValue[Map[String, Any]](nmap.parameters))
   ).map(
     x => Notification(x._1, x._2.substring(11,19),
-      x._3.get("mac").get.asInstanceOf[String],
-      x._3.get("uuid").get.asInstanceOf[String],
-      x._3.get("value").get.asInstanceOf[Double])
-  ) foreachRDD { rdd =>
+      x._3.get("county").get.asInstanceOf[Int],
+      x._3.get("pressure").get.asInstanceOf[Double],
+      x._3.get("temp").get.asInstanceOf[Double])
+  ).map(
+    x => (x.county, NotificationAggregate(x.county, 1, x.pressure, x.temperature))
+  ).reduceByKey( (a: NotificationAggregate, b: NotificationAggregate) => {
+    NotificationAggregate(a.county, a.count + b.count, a.pressure + b.pressure, a.temperature + b.temperature)
+  }) foreachRDD { rdd =>
     val producer = kafkaBroadcasted
     rdd foreachPartition { part =>
-      part.foreach(msg => producer.value.send(msg.deviceGuid.getBytes()))
+      part.foreach(msg => {
+        val out = JacksMapper.writeValueAsString(msg._2)
+        producer.value.send(out.getBytes())
+      })
     }
   }
 
