@@ -63,8 +63,9 @@ int main(int argc, char ** argv)
 	double v_press = random() % 10 * 0.01 + 746.0;
         int in_period = message_num % period_length;
         if (in_period > offset && in_period < offset + ct_period_length) {
-		int xv = in_period - offset - ct_period_length / 2;
-		v_temp = (1 / sqrt(0.8 * 3.1415926)) * (max_temp - min_temp) * ( exp( - xv * xv / 0.4) ) + min_temp;
+		float xv = (in_period - offset - ct_period_length / 2 + 0.0) / ct_period_length / 2;
+                v_press = xv;
+		v_temp = (1.0d / sqrt(0.8d * 3.1415926d)) * (max_temp - min_temp) * ( exp( - xv * xv / 0.4d) ) + min_temp;
 	}
 	msg_buf << "{'action': 'notification/insert', 'deviceGuid': '" << deviceUuid << "', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': ";
 	msg_buf << std::fixed << std::setprecision(3) << v_temp << ", 'pressure': " << std::fixed << std::setprecision(2) << v_press <<", 'units': 'SI', 'county': " << deviceCounty << ", 'state': '" << argv[7] << "' } }}";
