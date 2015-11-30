@@ -10,7 +10,6 @@ new function() {
 		ws.onopen = onOpen;
 		ws.onclose = onClose;
 		ws.onmessage = onMessage;
-		alert(ws.onmessage);
 		ws.onerror = onError;
 	}
 	
@@ -34,31 +33,19 @@ new function() {
 	  return temperature; //TODO
 	}
 
-	function getColor(pressure, temperature, points, colors) {
-	var dewPoint = getDewPoint(pressure, temperature);
-    for (var i = 0; i < points.length; i++) {
-       if (dewPoint <= points[i]) {
-         return colors[i];
-       }
-    }
-
-    return 'rgb(8,48,107)'; //default value
-
-    }
-	
 	var onMessage = function(event) {
-
-       var colors = ['rgb(247,251,255)', 'rgb(8,48,107)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)', 'rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)']
-	   var points = [23, 300];
 
 		var data = JSON.parse(event.data);
 		var county = data["county"];
 
 		var dataMap = {};
-		dataMap[county] = getColor(data["pressure"], data["temperature"], points, colors);
+		var color = d3.scale.linear()
+		.domain([22, 33])
+		.range(["hsl(214, 28%, 65%)", "hsl(214, 56%, 31%)"])
+		.interpolate(d3.interpolateHcl);
 
-	    map.updateChoropleth(dataMap);
-
+		dataMap[county] = color(getDewPoint(data["pressure"], data["temperature"]));
+		map.updateChoropleth(dataMap);
 	};
 	
 	var onError = function(event) {
@@ -74,11 +61,11 @@ new function() {
 				close();
 				open();
 			});
-		
+			
 			disconnectButton.click(function(e) {
 				close();
 			});
-				
+			
 		}
 	};
 }
