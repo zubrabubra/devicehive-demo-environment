@@ -36,7 +36,7 @@ new function() {
 	var onMessage = function(event) {
 
 		var data = JSON.parse(event.data);
-		var county = data["county"];
+		var county = data["state"];
 
 		var dataMap = {};
 		var color = d3.scale.linear()
@@ -44,7 +44,8 @@ new function() {
 		.range(["hsl(214, 28%, 65%)", "hsl(214, 56%, 31%)"])
 		.interpolate(d3.interpolateHcl);
 
-		dataMap[county] = color(getDewPoint(data["pressure"], data["temperature"]));
+		//TODO check count value should be non zero
+		dataMap[county] = color(getDewPoint(data["pressure"]  / data["count"] , data["temperature"]  / data["count"));
 		map.updateChoropleth(dataMap);
 	};
 	
