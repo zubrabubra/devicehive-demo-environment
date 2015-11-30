@@ -1,5 +1,5 @@
 CXXFLAGS = -std=gnu++0x -Wall
-LDLIBS = -lstdc++
+LDLIBS = -lm -lstdc++
 .PHONY: all clean test
 all: dh-cli
 clean:

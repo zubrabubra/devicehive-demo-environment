@@ -9,18 +9,30 @@
 #include <memory>
 #include <unistd.h>
 #include <sstream>
+#include <math.h>
+#include <iomanip>
+
 
 int main(int argc, char ** argv)
 {
   
   if (argc == 1) {
-    printf("dh-cli <number of forks> <server name> <port number> <url end point> <guid/name> <count> <state two chars> <county id>\n");
+    printf("dh-cli <number of forks> <server name> <port number> <url end point> <guid/name> <count> <state two chars> <county id> <total length> <offset from start> <period length> <min_temp> <max_temp>\n");
     return 1;
   }
 
   int forkCount = atoi(argv[1]);
   std::string url = std::string("ws://") + std::string(argv[2]) + std::string(":") + std::string(argv[3]) + std::string(argv[4]);
   
+  int period_length = atoi(argv[9]);
+  int offset = atoi(argv[10]);
+  int ct_period_length = atoi(argv[11]);
+  int min_temp = atoi(argv[12]);
+  int max_temp = atoi(argv[13]);
+
+
+  printf("mx %d\n", max_temp);
+
   while (forkCount > 0) {
     forkCount--;
     pid_t pid = fork();
@@ -50,10 +62,18 @@ int main(int argc, char ** argv)
 
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
         std::ostringstream msg_buf;
-	double v_temp = random() % 100 * 0.01 + 23.0;
-	double v_press = random() % 100 * 0.01 + 746.0;
+	double v_temp = random() % 100 * 0.02 + min_temp;
+	double v_press = random() % 10 * 0.01 + 746.0;
+        int in_period = message_num % period_length;
+        if (in_period > offset && in_period < offset + ct_period_length) {
+		double xv = (in_period - offset - ct_period_length / 2.0d + 0.0) / ct_period_length * 6.66d;
+                v_press = xv;
+		double gauss = exp( - xv * xv / 2.0d) / (sqrt( 2.0d * 3.1415926d ));
+		v_temp = gauss / 0.4d * (max_temp - min_temp) + min_temp;
+		//v_temp = (1.0d / sqrt(2.0d * 3.1415926d)) * (max_temp - min_temp) * ( exp( - xv * xv / 2.0d) ) + 0.0d + min_temp;
+	}
 	msg_buf << "{'action': 'notification/insert', 'deviceGuid': '" << deviceUuid << "', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': ";
-	msg_buf << v_temp << ", 'pressure': "<< v_press <<", 'units': 'SI', 'county': " << deviceCounty << ", 'state': '" << argv[7] << "' } }}";
+	msg_buf << std::fixed << std::setprecision(3) << v_temp << ", 'pressure': " << std::fixed << std::setprecision(2) << v_press <<", 'units': 'SI', 'county': " << deviceCounty << ", 'state': '" << argv[7] << "' } }}";
 	//ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': 23.3, 'pressure': 764.0, 'units': 'SI', 'county': "+deviceCounty+", 'state': '"+argv[7]+"' } }}");
         ws->send(msg_buf.str());
 	ws->poll(-1);
