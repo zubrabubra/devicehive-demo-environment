@@ -29,10 +29,36 @@ new function() {
 		console.log('CLOSED:');
 		ws = null;
 	};
+
+	function getDewPoint(pressure, temperature) {
+	  return temperature; //TODO
+	}
+
+	function getColor(pressure, temperature, points, colors) {
+	var dewPoint = getDewPoint(pressure, temperature);
+    for (var i = 0; i < points.length; i++) {
+       if (dewPoint <= points[i]) {
+         return colors[i];
+       }
+    }
+
+    return 'rgb(8,48,107)'; //default value
+
+    }
 	
 	var onMessage = function(event) {
-		var data = event.data;
-		console.log(data);
+
+       var colors = ['rgb(247,251,255)', 'rgb(8,48,107)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)', 'rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)']
+	   var points = [23, 300];
+
+		var data = JSON.parse(event.data);
+		var county = data["county"];
+
+		var dataMap = {};
+		dataMap[county] = getColor(data["pressure"], data["temperature"], points, colors);
+
+	    map.updateChoropleth(dataMap);
+
 	};
 	
 	var onError = function(event) {
