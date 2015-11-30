@@ -15,5 +15,12 @@
         element: document.getElementById('container1'),
         scope: 'usa'
     });
+
+    setTimeout(5000, function() {
+       map.updateChoropleth({
+   'KY': {fillKey: 'LOW'},
+   'OR': '#0fa0fa'
+});
+    });
   </script>     
 </body>
