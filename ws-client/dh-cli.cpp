@@ -49,8 +49,14 @@ int main(int argc, char ** argv)
       ws->poll(-1);
 
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
-        ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': 23.3, 'pressure': 764.0, 'units': 'SI', 'county': "+deviceCounty+", 'state': '"+argv[7]+"' } }}");
-        ws->poll(-1);
+        std::ostringstream msg_buf;
+	double v_temp = random() % 100 * 0.01 + 23.0;
+	double v_press = random() % 100 * 0.01 + 746.0;
+	msg_buf << "{'action': 'notification/insert', 'deviceGuid': '" << deviceUuid << "', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': ";
+	msg_buf << v_temp << ", 'pressure': "<< v_press <<", 'units': 'SI', 'county': " << deviceCounty << ", 'state': '" << argv[7] << "' } }}";
+	//ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': 23.3, 'pressure': 764.0, 'units': 'SI', 'county': "+deviceCounty+", 'state': '"+argv[7]+"' } }}");
+        ws->send(msg_buf.str());
+	ws->poll(-1);
         ws->dispatch( [](const std::string & message) {
             printf(">>A>> %s\n", message.c_str());
         } );
