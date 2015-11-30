@@ -10,7 +10,7 @@ new function() {
 		ws.onopen = onOpen;
 		ws.onclose = onClose;
 		ws.onmessage = onMessage;
-		alert(ws.onmessage);
+		//alert(ws.onmessage);
 		ws.onerror = onError;
 	}
 	
@@ -49,13 +49,14 @@ new function() {
 	var onMessage = function(event) {
 
        var colors = ['rgb(247,251,255)', 'rgb(8,48,107)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)', 'rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)']
-	   var points = [23, 300];
+	   var points = [23, 25];
 
 		var data = JSON.parse(event.data);
-		var county = data["county"];
+		var county = data["state"];
 
 		var dataMap = {};
-		dataMap[county] = getColor(data["pressure"], data["temperature"], points, colors);
+		//TODO check count value should be non zero
+		dataMap[county] = getColor(data["pressure"] / data["count"], data["temperature"] / data["count"], points, colors);
 
 	    map.updateChoropleth(dataMap);
 
