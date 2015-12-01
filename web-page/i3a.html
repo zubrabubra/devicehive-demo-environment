@@ -17,7 +17,7 @@
         }
 
         .graph .axis .tick text {
-            fill: white;
+            fill: black;
             font-size: 0.7em;
         }
 
@@ -41,8 +41,10 @@
 	    <script src="ws_data.js"></script>
         <script>
 		var onMassageArray = new Array();
+		var dewPointArray = new Array();;
 		var stateFromQuery = "";
-		var previousVal = 0;
+		var tempVal = 0;
+		var dewVal = 0;
         var limit = 60 * 1,
             duration = 750,
             now = new Date(Date.now() - duration)
@@ -57,6 +59,13 @@
                 data: d3.range(limit).map(function() {
                     return 0
                 })
+            },
+			dewPoint: {
+                value: 0,
+                color: 'blue',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
             }
         }
 
@@ -65,7 +74,7 @@
             .range([0, width])
 
         var y = d3.scale.linear()
-            .domain([20, 30])
+            .domain([5, 30])
             .range([height, 0])
 
         var line = d3.svg.line()
@@ -80,12 +89,16 @@
         var svg = d3.select('.graph').append('svg')
             .attr('class', 'chart')
             .attr('width', width)
-            .attr('height', height + 50)
+            .attr('height', height)
 
-        var axis = svg.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
+        //var axis = svg.append('g')
+            //.attr('class', 'x axis')
+            //.attr('transform', 'translate(20,' + (height+5) + ')')
+            //.call(x.axis = d3.svg.axis().scale(x).orient('bottom').ticks(0))
+		var axisY = svg.append('g')
+			.attr('class', 'y axis')
+            .attr('transform', 'translate(0,5)')
+            .call(y.axis = d3.svg.axis().scale(y).orient('right'))
 
         var paths = svg.append('g')
 
@@ -98,16 +111,20 @@
         }
 
         function tick() {
-			var addValue = previousVal;
-			if(onMassageArray.length != 0){addValue = onMassageArray.shift()};
-			previousVal = addValue;
+			$('#arrayDataSize').html(onMassageArray.length);//temp
+			$('#dewPointVal').html(dewPointArray.length);//temp
+			if(onMassageArray.length != 0){tempVal = onMassageArray.shift()};
+			if(dewPointArray.length != 0){dewVal = dewPointArray.shift()};
 			now = new Date()
 
 				// Add new values
 				for (var name in groups) {
 					var group = groups[name];
-					//group.data.push(group.value) // Real values arrive at irregular intervals
-					group.data.push(addValue);
+					if(name == 'dewPoint'){
+						group.data.push(dewVal);
+					}else{
+						group.data.push(tempVal);
+					}	
 					group.path.attr('d', line);
 				}
 
@@ -115,10 +132,10 @@
 				x.domain([now - (limit - 2) * duration, now - duration])
 
 				// Slide x-axis left
-				axis.transition()
-					.duration(duration)
-					.ease('linear')
-					.call(x.axis)
+				//axis.transition()
+					//.duration(duration)
+					//.ease('linear')
+					//.call(x.axis)
 
 				// Slide paths left
 				paths.attr('transform', null)

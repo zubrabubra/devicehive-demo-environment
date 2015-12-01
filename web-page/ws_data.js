@@ -6,7 +6,6 @@ new function() {
 	var open = function() {
 		var host = '52.34.199.168';
 		ws = new WebSocket("ws://" +host  + ":9000/notifications");
-		ws = {};
 		ws.onopen = onOpen;
 		ws.onclose = onClose;
 		ws.onmessage = onMessage;
@@ -31,13 +30,26 @@ new function() {
 	};
 	
 	var onMessage = function(event) {
-
+		var temp = "temperature";
+		var pressure = "pressure";
+		var count = "count";
+		var state = "state"
 		var data = JSON.parse(event.data);
-        if(data["count"] && data["count"] != 0 && stateFromQuery.localeCompare(data["state"]) == 0){
-			onMassageArray.push(data["temperature"] / data["count"]);
+        if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
+			onMassageArray.push(data[temp] / data[count]);
+		}
+		if(data[pressure] && data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
+			dewPointArray.push(getDewPoint(data[pressure]/ data[count], data[temp]/ data[count]));
 		}
 
 	};
+	
+	function getDewPoint(pressure, temperature) {
+	   var b = 237.7;
+	   var a = 17.27;
+	   var gamma = (a * temperature) / (b + temperature) + Math.log(pressure / 100);
+	   return (b * gamma) / (a - gamma);
+	}
 	
 	var onError = function(event) {
 		alert(event.data);
