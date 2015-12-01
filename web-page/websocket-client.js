@@ -30,7 +30,10 @@ new function() {
 	};
 
 	function getDewPoint(pressure, temperature) {
-	  return temperature; //TODO
+	  var b = 237.7;
+	  var a = 17.27;
+	  var gamma = (a * temperature) / (b + temperature) + Math.log(pressure / 100);
+	  return (b * gamma) / (a - gamma);
 	}
 
 	var onMessage = function(event) {
@@ -45,6 +48,7 @@ new function() {
 		.interpolate(d3.interpolateHcl);
 
 		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
+		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		dataMap[county] = color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		map.updateChoropleth(dataMap);
 	};
