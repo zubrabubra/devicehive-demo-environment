@@ -44,8 +44,8 @@ new function() {
 		.range(["hsl(214, 28%, 65%)", "hsl(214, 56%, 31%)"])
 		.interpolate(d3.interpolateHcl);
 
-		//TODO check count value should be non zero
-		dataMap[county] = color(getDewPoint(data["pressure"]  / data["count"] , data["temperature"]  / data["count"));
+		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
+		dataMap[county] = color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		map.updateChoropleth(dataMap);
 	};
 	
