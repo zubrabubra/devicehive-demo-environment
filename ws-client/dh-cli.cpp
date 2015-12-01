@@ -30,6 +30,7 @@ int main(int argc, char ** argv)
   int min_temp = atoi(argv[12]);
   int max_temp = atoi(argv[13]);
 
+  srand(argv[8][0] * 256 + argv[8][1]);
 
   printf("mx %d\n", max_temp);
 
@@ -63,11 +64,11 @@ int main(int argc, char ** argv)
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
         std::ostringstream msg_buf;
 	double v_temp = random() % 100 * 0.02 + min_temp;
-	double v_press = random() % 10 * 0.01 + 746.0;
+	double v_press = random() % 10 + 55.0d;
         int in_period = message_num % period_length;
         if (in_period > offset && in_period < offset + ct_period_length) {
 		double xv = (in_period - offset - ct_period_length / 2.0d + 0.0) / ct_period_length * 6.66d;
-                v_press = xv;
+                //v_press = xv;
 		double gauss = exp( - xv * xv / 2.0d) / (sqrt( 2.0d * 3.1415926d ));
 		v_temp = gauss / 0.4d * (max_temp - min_temp) + min_temp;
 		//v_temp = (1.0d / sqrt(2.0d * 3.1415926d)) * (max_temp - min_temp) * ( exp( - xv * xv / 2.0d) ) + 0.0d + min_temp;

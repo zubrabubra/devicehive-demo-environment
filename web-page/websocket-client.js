@@ -42,14 +42,20 @@ new function() {
 		var county = data["state"];
 
 		var dataMap = {};
-		var color = d3.scale.linear()
-		.domain([22, 33])
+		var color = d3.scale.log()
+		.domain([13, 20])
 		.range(["hsl(214, 28%, 65%)", "hsl(214, 56%, 31%)"])
 		.interpolate(d3.interpolateHcl);
+		
+		color = d3.scale.linear()
+                .domain([13, 17])
+                .range(["hsl(62,100%,90%)", "hsl(228,30%,20%)"])
+                .interpolate(d3.interpolateHcl);
 
 		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
 		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		dataMap[county] = color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
+		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + dataMap[county]);
 		map.updateChoropleth(dataMap);
 	};
 	
