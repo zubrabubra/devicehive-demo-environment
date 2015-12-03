@@ -81,6 +81,7 @@ int main(int argc, char ** argv)
         ws->dispatch( [](const std::string & message) {
             printf(">>A>> %s\n", message.c_str());
         } );
+	printf("%f\n", v_temp);
         sleep(1);
       }
 

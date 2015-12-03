@@ -49,13 +49,13 @@ new function() {
 		
 		color = d3.scale.linear()
                 .domain([22, 30])
-                .range(["blue", "red"]);
+                .range(["rgb(111, 190, 253)", "rgb(232, 133, 137)"]);
                 //.interpolate(d3.interpolateHcl);
 
 		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
-		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
+		//console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		dataMap[county] = color(data.temperature / data.count);// color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
-		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + dataMap[county]);
+		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + data.temperature / data.count + " " + dataMap[county]);
 		map.updateChoropleth(dataMap);
 	};
 	
