@@ -48,13 +48,13 @@ new function() {
 		.interpolate(d3.interpolateHcl);
 		
 		color = d3.scale.linear()
-                .domain([13, 17])
-                .range(["hsl(328,89.8%,50.0%)", "hsl(207, 97.3%, 71.4%)"]);
+                .domain([22, 30])
+                .range(["blue", "red"]);
                 //.interpolate(d3.interpolateHcl);
 
 		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
 		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
-		dataMap[county] = color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
+		dataMap[county] = color(data.temperature / data.count);// color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + dataMap[county]);
 		map.updateChoropleth(dataMap);
 	};
