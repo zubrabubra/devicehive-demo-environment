@@ -10,8 +10,20 @@ body{
 }
 
 #container1{
-position: absolute; left: -53px; top: -135px; width: 1025px; height: 1025px; z-index: -100
-}</style>
+    height: 1025px;
+    left: -20px;
+    position: absolute;
+    text-align: center;
+    top: -135px;
+    width: 100%;
+    z-index: -100;
+}
+.datamap{
+    display: inline-block;
+    overflow: hidden;
+    width: 1025px !important;
+}
+</style>
 
 <body>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
@@ -29,6 +41,8 @@ position: absolute; left: -53px; top: -135px; width: 1025px; height: 1025px; z-i
 	//$('#container1').css('left', - 26 +  window.innerWidth / 2 - 512);
     var map = new Datamap({
         element: document.getElementById('container1'),
+	width: 1024,
+	height: 1025,
         scope: 'usa',
         done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
