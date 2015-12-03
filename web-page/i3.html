@@ -2,12 +2,16 @@
 <meta charset="utf-8">
 
 <style>
-body {
+body{
+    background-color: #fff;
     background-image: url("title_page.png");
-    background-color: #cccccc;
+    background-position: center 0;
     background-repeat: no-repeat;
 }
-</style>
+
+#container1{
+position: absolute; left: -53px; top: -135px; width: 1025px; height: 1025px; z-index: -100
+}</style>
 
 <body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
@@ -16,11 +20,13 @@ body {
 <!-- script src="http://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script -->
 <script src="datamaps.all.min.js"></script>
 <script type="text/javascript" src="jquery.js"></script>
-<div id="container1" style="position: absolute; left: -53px; top: -135px; width: 1025px; height: 1025px; z-index: -100"></div>
+<div id="container1"></div>
 
 <script type="text/javascript" src="websocket-client.js"></script>
 
 <script>
+    $(function() {
+	$('#container1').css('left', - 26 +  window.innerWidth / 2 - 512);
     var map = new Datamap({
         element: document.getElementById('container1'),
         scope: 'usa',
@@ -31,7 +37,7 @@ body {
         });
         }
     });
-
+});
   </script>
 
 <button id="connectButton">Connect</button>
