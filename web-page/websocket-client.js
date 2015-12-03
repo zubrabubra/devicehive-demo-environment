@@ -49,8 +49,8 @@ new function() {
 		
 		color = d3.scale.linear()
                 .domain([13, 17])
-                .range(["hsl(62,100%,90%)", "hsl(228,30%,20%)"])
-                .interpolate(d3.interpolateHcl);
+                .range(["hsl(328,89.8%,50.0%)", "hsl(207, 97.3%, 71.4%)"]);
+                //.interpolate(d3.interpolateHcl);
 
 		var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
 		console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
