@@ -4,7 +4,7 @@ new function() {
 	var disconnectButton; 
 
 	var open = function() {
-		var host = '52.34.199.168';
+		var host = window.location.hostname;
 		ws = new WebSocket("ws://" +host  + ":9000/notifications");
 		ws.onopen = onOpen;
 		ws.onclose = onClose;
