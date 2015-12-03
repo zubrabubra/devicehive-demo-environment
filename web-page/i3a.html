@@ -42,43 +42,24 @@
 		.grid path {
 			  stroke-width: 0;
 		}
-		#tempVal{
-			background-color: white;
-			position: absolute; 
-			left: 698px;
-			top: 234px;
-			width: 57px;
-			height: 27px;
-		}
-		#dewVal{
-			background-color: white;
-			position: absolute; 
-			left: 698px;
-			top: 321px;
-			width: 57px;
-			height: 27px;
-		}
-		#humidityVal{
-			background-color: white;
-			position: absolute; 
-			left: 698px;
-			top: 502px;
-			width: 57px;
-			height: 27px;
-		}
 		.values{
+			background-color: white;
 			font-size:1.5em;
+		    width: 60px;
+			height: 30px;
+			display: table;
+		    margin: 0 auto;
 		}
         </style>
     </head>
     <body>
 
         <div class="graph" style="position: absolute; left: -83px; top: 205px; width: 100%; text-align: center;"></div>
-		<div class="graph2" style="position: absolute; left: 155px; top: 472px;"></div>
+		<div class="graph2" style="position: absolute; left: -83px; top: 472px; width: 100%; text-align: center;"></div>
 
-		<div id=tempVal class="values"></div>
-		<div id=dewVal class="values"></div>
-		<div id=humidityVal class="values"></div>
+		<div style="position: absolute; right: -247px; top: 235px; width: 100%; text-align: center;"><div id=tempVal class="values"></div></div>
+		<div style="position: absolute; right: -247px; top: 321px; width: 100%; text-align: center;"><div id=dewVal class="values"></div></div>
+		<div style="position: absolute; right: -247px; top: 502px; width: 100%; text-align: center;"><div id=humidityVal class="values"></div></div>
 
         <script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="jquery.js"></script>

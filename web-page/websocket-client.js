@@ -65,17 +65,17 @@ new function() {
 	
 	WebSocketClient = {
 		init: function() {			
-			connectButton = $('#connectButton');
-			disconnectButton = $('#disconnectButton'); 
+			//connectButton = $('#connectButton');
+			//disconnectButton = $('#disconnectButton'); 
 			
-			connectButton.click(function(e) {
-				close();
+			//connectButton.click(function(e) {
+				//close();
 				open();
-			});
+			//});
 			
-			disconnectButton.click(function(e) {
-				close();
-			});
+			//disconnectButton.click(function(e) {
+				//close();
+			//});
 			
 		}
 	};
