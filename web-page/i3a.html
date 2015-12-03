@@ -9,7 +9,8 @@
 			background-image: url("charts.png");
 			background-color: #cccccc;
 			background-repeat: no-repeat;
-        }
+        background-position: center 0;
+	}
 
         .graph .axis {
             stroke-width: 2;
@@ -71,7 +72,7 @@
         </style>
     </head>
     <body>
-        <div class="graph" style="position: absolute; left: 155px; top: 205px;"></div>
+        <div class="graph" style="position: absolute; left: -83px; top: 205px; width: 100%; text-align: center;"></div>
 		<div id=tempVal class="values"></div>
 		<div id=dewVal class="values"></div>
 		<div id=humidityVal class="values"></div>
@@ -127,14 +128,14 @@
 			return d3.svg.axis()
 				.scale(y)
 				.orient("left")
-				.ticks(9)
+				.ticks(15)
 		}
         var x = d3.time.scale()
             .domain([now - (limit - 2), now - duration])
             .range([0, width])
 
         var y = d3.scale.linear()
-            .domain([66, 86])
+            .domain([54, 80])
             .range([height+5, 6])
 
         var line = d3.svg.line()
