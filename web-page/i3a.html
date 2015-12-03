@@ -7,30 +7,30 @@
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 			background-image: url("charts.png");
-			background-color: #cccccc;
+			background-color: #7F7F7F;
 			background-repeat: no-repeat;
         background-position: center 0;
 	}
 
-        .graph .axis {
+        .graph .axis, .graph2 .axis {
             stroke-width: 2;
         }
 
-        .graph .axis .tick line {
+        .graph .axis .tick line, .graph2 .axis .tick line {
             stroke: black;
         }
 
-        .graph .axis .tick text {
+        .graph .axis .tick text, .graph2 .axis .tick text {
             fill: black;
             font-size: 0.8em;
         }
 
-        .graph .axis .domain {
+        .graph .axis .domain, .graph2 .axis .domain {
             fill: none;
             stroke: black;
         }
 
-        .graph .group {
+        .graph .group, .graph2 .group {
             fill: none;
             stroke: black;
             stroke-width: 1.5;
@@ -72,7 +72,10 @@
         </style>
     </head>
     <body>
+
         <div class="graph" style="position: absolute; left: -83px; top: 205px; width: 100%; text-align: center;"></div>
+		<div class="graph2" style="position: absolute; left: 155px; top: 472px;"></div>
+
 		<div id=tempVal class="values"></div>
 		<div id=dewVal class="values"></div>
 		<div id=humidityVal class="values"></div>
@@ -81,11 +84,13 @@
 		<script src="jquery.js"></script>
 	    <script src="ws_data.js"></script>
         <script>
-		var onMassageArray = new Array();
+		var temperatureArray = new Array();
 		var dewPointArray = new Array();;
+		var humidityArray = new Array();
 		var stateFromQuery = "";
 		var tempVal = 0;
 		var dewVal = 0;
+		var humidityVal = 0;
         var limit = 60 * 1,
             duration = 750,
             now = new Date(Date.now() - duration)
@@ -107,7 +112,9 @@
                 data: d3.range(limit).map(function() {
                     return 0
                 })
-            },
+            }
+        }
+        var groups2 = {
 			humadity: {
                 value: 0,
                 color: '#00AA61',
@@ -117,14 +124,14 @@
             }
         }
 		
-		function make_x_axis() {        
-			return d3.svg.axis()
-				.scale(x)
-				 .orient("bottom")
-				 .ticks(5)
-		}
-
 		function make_y_axis() {        
+			return d3.svg.axis()
+				.scale(y)
+				.orient("left")
+				.ticks(15)
+		}
+		
+		function make_y2_axis() {        
 			return d3.svg.axis()
 				.scale(y)
 				.orient("left")
@@ -137,6 +144,10 @@
         var y = d3.scale.linear()
             .domain([54, 80])
             .range([height+5, 6])
+			
+		var y2 = d3.scale.linear()
+            .domain([30, 90])
+            .range([height+5, 6])
 
         var line = d3.svg.line()
             .interpolate('basis')
@@ -146,7 +157,7 @@
             .y(function(d) {
                 return y(d)
             })
-
+//First chart
         var svg = d3.select('.graph').append('svg')
             .attr('class', 'chart')
             .attr('width', width)
@@ -170,12 +181,44 @@
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height) + ')')
             .call(x.axis = d3.svg.axis().scale(x).orient('bottom').ticks(0))
+//Second chart
+       var svg2 = d3.select('.graph2').append('svg')
+            .attr('class', 'chart')
+            .attr('width', width)
+            .attr('height', height)
+		svg2.append("rect")
+			.attr("width", "100%")
+			.attr("height", "100%")
+			.attr("fill", "white");
 
-        var paths = svg.append('g')
+		svg2.append("g")         
+			.attr("class", "grid")
+			.call(make_y2_axis()
+				.tickSize(-width, 0, 0)
+				.tickFormat("")
+        )
+		svg2.append('g')
+			.attr('class', 'y axis')
+            .attr('transform', 'translate(0,0)')
+            .call(y.axis = d3.svg.axis().scale(y2).orient('right'))
+		svg2.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + (height) + ')')
+            .call(x.axis = d3.svg.axis().scale(x).orient('bottom').ticks(0))
+			
+        var paths = svg.append('g');
+		var paths2 = svg2.append('g');
 
         for (var name in groups) {
             var group = groups[name]
             group.path = paths.append('path')
+                .data([group.data])
+                .attr('class', name + ' group')
+                .style('stroke', group.color)
+        }
+		for (var name in groups2) {
+            var group = groups2[name]
+            group.path = paths2.append('path')
                 .data([group.data])
                 .attr('class', name + ' group')
                 .style('stroke', group.color)
@@ -186,10 +229,9 @@
 		}
 
         function tick() {
-			$('#arrayDataSize').html(onMassageArray.length);//temp
-			$('#dewPointVal').html(dewPointArray.length);//temp
-			if(onMassageArray.length != 0){tempVal = onMassageArray.shift(); onMassageArray =[];};
+			if(temperatureArray.length != 0){tempVal = temperatureArray.shift(); temperatureArray =[];};
 			if(dewPointArray.length != 0){dewVal = dewPointArray.shift(); dewPointArray=[];};
+			if(humidityArray.length != 0){humidityVal = humidityArray.shift(); humidityArray=[];};
 			now = new Date()
 
 				// Add new values
@@ -198,10 +240,19 @@
 					if(name == 'dewPoint'){
 						group.data.push(dewVal);
 						$('#dewVal').html(formatDecimal(dewVal));
-					}else{
+					}else if(name == 'temperature'){
 						group.data.push(tempVal);
 						$('#tempVal').html(formatDecimal(tempVal));
-					}	
+					}else {
+						group.data.push(tempVal);
+						$('#humidityVal').html(formatDecimal(humidityVal));
+					}
+					group.path.attr('d', line);
+				}
+				for (var name in groups2) {
+					var group = groups2[name];
+						group.data.push(humidityVal);
+						$('#humidityVal').html(formatDecimal(humidityVal));
 					group.path.attr('d', line);
 				}
 
@@ -214,11 +265,21 @@
 					.duration(duration)
 					.ease('linear')
 					.attr('transform', 'translate(' + x(now - (limit - 1) * duration) + ')')
+					.each('end', null)
+				paths2.attr('transform', null)
+					.transition()
+					.duration(duration)
+					.ease('linear')
+					.attr('transform', 'translate(' + x(now - (limit - 1) * duration) + ')')
 					.each('end', tick)
 
 				// Remove oldest data point from each group
 				for (var name in groups) {
 					var group = groups[name]
+					group.data.shift()
+				}
+				for (var name in groups2) {
+					var group = groups2[name]
 					group.data.shift()
 				}
         }

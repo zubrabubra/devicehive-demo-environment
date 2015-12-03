@@ -35,12 +35,14 @@ new function() {
 		var count = "count";
 		var state = "state"
 		var data = JSON.parse(event.data);
-		if(data[temp])data[temp] = transformFromCtoF(data[temp]);
         if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
-			onMassageArray.push(data[temp] / data[count]);
+			temperatureArray.push(transformFromCtoF(data[temp] / data[count]));
 		}
 		if(data[pressure] && data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
-			dewPointArray.push(getDewPoint(data[pressure]/ data[count], data[temp]/ data[count]));
+			dewPointArray.push(transformFromCtoF(getDewPoint(data[pressure]/ data[count], data[temp]/ data[count])));
+		}
+		if(data[pressure] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
+			humidityArray.push(data[pressure]/ data[count]);
 		}
 
 	};
