@@ -35,6 +35,7 @@ new function() {
 		var count = "count";
 		var state = "state"
 		var data = JSON.parse(event.data);
+		if(data[temp])data[temp] = transformFromCtoF(data[temp]);
         if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
 			onMassageArray.push(data[temp] / data[count]);
 		}
@@ -50,6 +51,9 @@ new function() {
 	   var gamma = (a * temperature) / (b + temperature) + Math.log(pressure / 100);
 	   return (b * gamma) / (a - gamma);
 	}
+	function transformFromCtoF(degree){
+		return degree*9/5+32
+	}
 	
 	var onError = function(event) {
 		alert(event.data);
@@ -57,18 +61,7 @@ new function() {
 	
 	WebSocketClient = {
 		init: function() {			
-			connectButton = $('#connectButton');
-			disconnectButton = $('#disconnectButton'); 
-			
-			connectButton.click(function(e) {
-				close();
-				open();
-			});
-		
-			disconnectButton.click(function(e) {
-				close();
-			});
-				
+			open();
 		}
 	};
 }

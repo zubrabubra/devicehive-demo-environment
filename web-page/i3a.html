@@ -6,10 +6,13 @@
         <style>
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			background-image: url("charts.png");
+			background-color: #cccccc;
+			background-repeat: no-repeat;
         }
 
         .graph .axis {
-            stroke-width: 1;
+            stroke-width: 2;
         }
 
         .graph .axis .tick line {
@@ -18,7 +21,7 @@
 
         .graph .axis .tick text {
             fill: black;
-            font-size: 0.7em;
+            font-size: 0.8em;
         }
 
         .graph .axis .domain {
@@ -31,10 +34,47 @@
             stroke: black;
             stroke-width: 1.5;
         }
+		.grid .tick {
+			stroke: lightgrey;
+			opacity: 0.7;
+		}
+		.grid path {
+			  stroke-width: 0;
+		}
+		#tempVal{
+			background-color: white;
+			position: absolute; 
+			left: 698px;
+			top: 234px;
+			width: 57px;
+			height: 27px;
+		}
+		#dewVal{
+			background-color: white;
+			position: absolute; 
+			left: 698px;
+			top: 321px;
+			width: 57px;
+			height: 27px;
+		}
+		#humidityVal{
+			background-color: white;
+			position: absolute; 
+			left: 698px;
+			top: 502px;
+			width: 57px;
+			height: 27px;
+		}
+		.values{
+			font-size:1.5em;
+		}
         </style>
     </head>
     <body>
-        <div class="graph"></div>
+        <div class="graph" style="position: absolute; left: 155px; top: 205px;"></div>
+		<div id=tempVal class="values"></div>
+		<div id=dewVal class="values"></div>
+		<div id=humidityVal class="values"></div>
 
         <script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="jquery.js"></script>
@@ -49,33 +89,53 @@
             duration = 750,
             now = new Date(Date.now() - duration)
 
-        var width = 500,
+        var width = 485,
             height = 200
 
         var groups = {
             temperature: {
                 value: 0,
-                color: 'orange',
+                color: '#C80000',
                 data: d3.range(limit).map(function() {
                     return 0
                 })
             },
 			dewPoint: {
                 value: 0,
-                color: 'blue',
+                color: '#0093C8',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            },
+			humadity: {
+                value: 0,
+                color: '#00AA61',
                 data: d3.range(limit).map(function() {
                     return 0
                 })
             }
         }
+		
+		function make_x_axis() {        
+			return d3.svg.axis()
+				.scale(x)
+				 .orient("bottom")
+				 .ticks(5)
+		}
 
+		function make_y_axis() {        
+			return d3.svg.axis()
+				.scale(y)
+				.orient("left")
+				.ticks(9)
+		}
         var x = d3.time.scale()
             .domain([now - (limit - 2), now - duration])
             .range([0, width])
 
         var y = d3.scale.linear()
-            .domain([5, 30])
-            .range([height, 0])
+            .domain([66, 86])
+            .range([height+5, 6])
 
         var line = d3.svg.line()
             .interpolate('basis')
@@ -90,15 +150,25 @@
             .attr('class', 'chart')
             .attr('width', width)
             .attr('height', height)
+		svg.append("rect")
+			.attr("width", "100%")
+			.attr("height", "100%")
+			.attr("fill", "white");
 
-        //var axis = svg.append('g')
-            //.attr('class', 'x axis')
-            //.attr('transform', 'translate(20,' + (height+5) + ')')
-            //.call(x.axis = d3.svg.axis().scale(x).orient('bottom').ticks(0))
-		var axisY = svg.append('g')
+		svg.append("g")         
+			.attr("class", "grid")
+			.call(make_y_axis()
+				.tickSize(-width, 0, 0)
+				.tickFormat("")
+        )
+		svg.append('g')
 			.attr('class', 'y axis')
-            .attr('transform', 'translate(0,5)')
+            .attr('transform', 'translate(0,0)')
             .call(y.axis = d3.svg.axis().scale(y).orient('right'))
+		svg.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + (height) + ')')
+            .call(x.axis = d3.svg.axis().scale(x).orient('bottom').ticks(0))
 
         var paths = svg.append('g')
 
@@ -109,12 +179,16 @@
                 .attr('class', name + ' group')
                 .style('stroke', group.color)
         }
+		
+		function formatDecimal(decimal){
+			return parseFloat(Math.round(decimal * 100) / 100).toFixed(2);
+		}
 
         function tick() {
 			$('#arrayDataSize').html(onMassageArray.length);//temp
 			$('#dewPointVal').html(dewPointArray.length);//temp
-			if(onMassageArray.length != 0){tempVal = onMassageArray.shift()};
-			if(dewPointArray.length != 0){dewVal = dewPointArray.shift()};
+			if(onMassageArray.length != 0){tempVal = onMassageArray.shift(); onMassageArray =[];};
+			if(dewPointArray.length != 0){dewVal = dewPointArray.shift(); dewPointArray=[];};
 			now = new Date()
 
 				// Add new values
@@ -122,20 +196,16 @@
 					var group = groups[name];
 					if(name == 'dewPoint'){
 						group.data.push(dewVal);
+						$('#dewVal').html(formatDecimal(dewVal));
 					}else{
 						group.data.push(tempVal);
+						$('#tempVal').html(formatDecimal(tempVal));
 					}	
 					group.path.attr('d', line);
 				}
 
 				// Shift domain
 				x.domain([now - (limit - 2) * duration, now - duration])
-
-				// Slide x-axis left
-				//axis.transition()
-					//.duration(duration)
-					//.ease('linear')
-					//.call(x.axis)
 
 				// Slide paths left
 				paths.attr('transform', null)
@@ -164,7 +234,5 @@
 			}
 		});
         </script>
-		<button id="connectButton">Connect</button>
-		<button id="disconnectButton">Disconnect</button>
     </body>
 </html>
