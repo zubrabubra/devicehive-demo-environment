@@ -30,8 +30,10 @@ int main(int argc, char ** argv)
   int min_temp = atoi(argv[12]);
   int max_temp = atoi(argv[13]);
 
+  std::string _log_level = (argv[argc-1][0] == 'v' ? argv[argc-1] : "i0");
+  int log_level = atoi(_log_level.substr(1).c_str());
+  
   srand(argv[8][0] * 256 + argv[8][1]);
-
   printf("mx %d\n", max_temp);
 
   while (forkCount > 0) {
@@ -64,18 +66,24 @@ int main(int argc, char ** argv)
       for (int message_num = 0; message_num < atoi(argv[6]); message_num++) {
         std::ostringstream msg_buf;
 	double v_temp = random() % 100 * 0.02 + min_temp;
-	double v_press = random() % 10 + 55.0d;
+	double v_press = random() % 25 * 0.01 + 55.0d;
         int in_period = message_num % period_length;
         if (in_period > offset && in_period < offset + ct_period_length) {
 		double xv = (in_period - offset - ct_period_length / 2.0d + 0.0) / ct_period_length * 6.66d;
-                //v_press = xv;
+                
 		double gauss = exp( - xv * xv / 2.0d) / (sqrt( 2.0d * 3.1415926d ));
 		v_temp = gauss / 0.4d * (max_temp - min_temp) + min_temp;
-		//v_temp = (1.0d / sqrt(2.0d * 3.1415926d)) * (max_temp - min_temp) * ( exp( - xv * xv / 2.0d) ) + 0.0d + min_temp;
-	}
+
+                xv = in_period - offset - ct_period_length / 2.0;
+                xv = (xv > 0 ? xv : -xv) - ct_period_length / 4.0;
+                xv = xv / ct_period_length * 6.66d;
+                gauss = exp( - xv * xv / 2.0d) / (sqrt( 2.0d * 3.1415926d ));
+                v_press = gauss / 0.4d * 5.0d + 55.0d;
+
+                printf("tmp = %f\n", v_press);
+        }
 	msg_buf << "{'action': 'notification/insert', 'deviceGuid': '" << deviceUuid << "', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': ";
 	msg_buf << std::fixed << std::setprecision(3) << v_temp << ", 'pressure': " << std::fixed << std::setprecision(2) << v_press <<", 'units': 'SI', 'county': " << deviceCounty << ", 'state': '" << argv[7] << "' } }}";
-	//ws->send("{'action': 'notification/insert', 'deviceGuid': '"+deviceUuid+"', 'notification': { 'notification': 'notificationTemperaturePressure', 'parameters': { 'temp': 23.3, 'pressure': 764.0, 'units': 'SI', 'county': "+deviceCounty+", 'state': '"+argv[7]+"' } }}");
         ws->send(msg_buf.str());
 	ws->poll(-1);
         ws->dispatch( [](const std::string & message) {
@@ -87,18 +95,6 @@ int main(int argc, char ** argv)
 
       sleep(10);
       return 0;
-      /*
-      ws->send("goodbye");
-      ws->send("hello");
-      while (ws->getReadyState() != WebSocket::CLOSED) {
-        WebSocket::pointer wsp = &*ws; // <-- because a unique_ptr cannot be copied into a lambda
-        ws->poll();
-        ws->dispatch([wsp](const std::string & message) {
-            printf(">>> %s\n", message.c_str());
-            if (message == "world") { wsp->close(); }
-        });
-      }
-      */
     }
   }
     // N.B. - unique_ptr will free the WebSocket instance upon return:
