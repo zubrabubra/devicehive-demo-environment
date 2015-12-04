@@ -66,19 +66,40 @@
 			display: table;
 			margin: 0 auto;
 		}
+		.numberValues{
+			width:65px;
+			margin-left:645px;
+			text-align: left;
+		}
         </style>
     </head>
     <body>
 
         <div class="graph" style="position: absolute; left: -83px; top: 205px; width: 100%; text-align: center;"></div>
 		<div class="graph2" style="position: absolute; left: -83px; top: 472px; width: 100%; text-align: center;"></div>
-
-		<div style="position: absolute; left: -83px; top: 232px; width: 100%; text-align: center;"><div style="width: 700px; text-align: right" id="tempVal" class="values"></div> </div>
-		<div style="position: absolute; left: -107px; top: 321px; width: 100%; text-align: center;"><div style="width: 700px; text-align: right" id=dewVal class="values"></div></div>
-		<div style="position: absolute; left: -77px; top: 500px; width: 100%; text-align: center;"><div style="width: 700px; text-align: right" id=humidityVal class="values"></div></div>
+		<!-- Temperature value-->
+		<div style="position: absolute; left: -80px; top: 232px; width: 100%; text-align: center;">
+			<div style="width: 700px; text-align: right;" class="values" >
+				<div id="tempVal" class="numberValues"></div>
+			</div>
+		</div>
+		<!-- Dew point value-->
+		<div style="position: absolute; left: -80px; top: 321px; width: 100%; text-align: center;">
+			<div style="width: 700px; text-align: right;" class="values">
+				<div id="dewVal" class="numberValues"></div>
+			</div>
+		</div>
+		<!-- Humidity value-->
+		<div style="position: absolute; left: -80px; top: 500px; width: 100%; text-align: center;">
+			<div style="width: 700px; text-align: right;" class="values">
+				<div id="humidityVal" class="numberValues"></div>
+			</div>
+		</div>
+		<!-- Close X-->
 		<div style="position: absolute; left: 0px; top: 150px; width: 100%; text-align: center; z-index: 9999;">
 			<div id="close" style="width:670px; text-align: center;"> <div style="float: right; height: 20px; width: 20px;" onClick="window.location.assign('./i3.html')"></div> </div>
 		</div>
+		<!-- State value-->
 		<div style="position: absolute; left: -296px; top: 140px; width: 100%; text-align: center; ">
 			<div id="state"></div>
 		</div>
