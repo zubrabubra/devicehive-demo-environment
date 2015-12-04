@@ -9,7 +9,8 @@
 			background-image: url("charts.png");
 			background-color: #7F7F7F;
 			background-repeat: no-repeat;
-        background-position: center 0;
+        		background-position: center 0;
+			height: 1200px;
 	}
 
         .graph .axis, .graph2 .axis {
@@ -43,11 +44,9 @@
 			  stroke-width: 0;
 		}
 		.values{
-			background-color: white;
-			font-size:1.5em;
-		    width: 60px;
+			background-color: transparent;
+			font-size: 1.75em;
 			height: 30px;
-			display: table;
 		    margin: 0 auto;
 		}
 		#close{
@@ -63,19 +62,20 @@
         <div class="graph" style="position: absolute; left: -83px; top: 205px; width: 100%; text-align: center;"></div>
 		<div class="graph2" style="position: absolute; left: -83px; top: 472px; width: 100%; text-align: center;"></div>
 
-		<div style="position: absolute; right: -247px; top: 235px; width: 100%; text-align: center;"><div id=tempVal class="values"></div></div>
-		<div style="position: absolute; right: -247px; top: 321px; width: 100%; text-align: center;"><div id=dewVal class="values"></div></div>
-		<div style="position: absolute; right: -247px; top: 502px; width: 100%; text-align: center;"><div id=humidityVal class="values"></div></div>
-		<div style="position: absolute; right: -326px; top: 150px; width: 100%; text-align: center;">
-			<div id="close" onClick="window.location.assign('./i3.html')"></div>
-		</div>
+	<div style="position: absolute; left: -480px; top: 230px; width: 100%; text-align: right;" id="tempVal" class="values"></div>
+	<div style="position: absolute; left: -480px; top: 321px; width: 100%; text-align: right;" id="dewVal" class="values"></div>
+	<div style="position: absolute; left: -480px; top: 502px; width: 100%; text-align: right;" id="humidityVal" class="values"></div>
+        
+                <div style="position: absolute; right: -326px; top: 150px; width: 100%; text-align: center;">
+                        <div id="close" onClick="window.location.assign('./i3.html')"></div>
+                </div>
 
-        <script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="jquery.js"></script>
 	    <script src="ws_data.js"></script>
         <script>
 		var temperatureArray = new Array();
-		var dewPointArray = new Array();;
+		var dewPointArray = new Array();
 		var humidityArray = new Array();
 		var stateFromQuery = "";
 		var tempVal = 0;
