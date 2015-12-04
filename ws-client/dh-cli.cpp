@@ -76,9 +76,9 @@ int main(int argc, char ** argv)
 
                 xv = in_period - offset - ct_period_length / 2.0;
                 xv = (xv > 0 ? xv : -xv) - ct_period_length / 4.0;
-                xv = xv / ct_period_length * 6.66d;
+                xv = xv / ct_period_length * 3.33d;
                 gauss = exp( - xv * xv / 2.0d) / (sqrt( 2.0d * 3.1415926d ));
-                v_press = gauss / 0.4d * 5.0d + 55.0d;
+                v_press = gauss / 0.4d * 10.0d + 55.0d;
 
                 printf("tmp = %f\n", v_press);
         }
