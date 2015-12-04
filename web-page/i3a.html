@@ -127,6 +127,7 @@
             }
         }
 		
+/*
 		function make_y_axis() {        
 			return d3.svg.axis()
 				.scale(y)
@@ -140,7 +141,8 @@
 				.orient("left")
 				.ticks(3)
 		}
-        var x = d3.time.scale()
+*/  
+      var x = d3.time.scale()
             .domain([now - (limit - 2), now - duration])
             .range([0, width])
 
@@ -149,8 +151,22 @@
             .range([height, 0])
 			
 		var y2 = d3.scale.linear()
-            .domain([54, 62])
+            .domain([54, 64])
             .range([height, 0])
+
+                function make_y_axis() {
+                        return d3.svg.axis()
+                                .scale(y)
+                                .orient("left")
+                                .ticks(5)
+                }
+
+                function make_y2_axis() {
+                        return d3.svg.axis()
+                                .scale(y2)
+                                .orient("left")
+                                .ticks(5)
+                }
 
         var line = d3.svg.line()
             .interpolate('basis')
@@ -211,7 +227,7 @@
 		svg2.append('g')
 			.attr('class', 'y axis')
             .attr('transform', 'translate(0,0)')
-            .call(y2.axis = d3.svg.axis().scale(y2).orient('right').tickValues([55,58,61]))
+            .call(y2.axis = d3.svg.axis().scale(y2).orient('right').tickValues([56,58,60,62]))
 		svg2.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height) + ')')
