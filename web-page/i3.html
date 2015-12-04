@@ -44,6 +44,9 @@ body{
 	width: 1024,
 	height: 1025,
         scope: 'usa',
+        fills: {
+            defaultFill: 'rgb(111, 190, 253)' //any hex, color name or rgb/rgba value
+        },
         done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
           url = "i3a.html?state=" + geography.id;
