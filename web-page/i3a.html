@@ -50,6 +50,12 @@
 			display: table;
 		    margin: 0 auto;
 		}
+		#close{
+		    width: 16px;
+			height: 16px;
+			display: table;
+		    margin: 0 auto;
+		}
         </style>
     </head>
     <body>
@@ -60,6 +66,9 @@
 		<div style="position: absolute; right: -247px; top: 235px; width: 100%; text-align: center;"><div id=tempVal class="values"></div></div>
 		<div style="position: absolute; right: -247px; top: 321px; width: 100%; text-align: center;"><div id=dewVal class="values"></div></div>
 		<div style="position: absolute; right: -247px; top: 502px; width: 100%; text-align: center;"><div id=humidityVal class="values"></div></div>
+		<div style="position: absolute; right: -326px; top: 150px; width: 100%; text-align: center;">
+			<div id="close" onClick="window.location.assign('./i3.html')"></div>
+		</div>
 
         <script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="jquery.js"></script>
