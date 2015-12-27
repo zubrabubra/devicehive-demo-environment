@@ -1,63 +1,45 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous">  
+  </head>
 
-<style>
-body{
-    background-color: #fff;
-    background-image: url("title_page.png");
-    background-position: center 0;
-    background-repeat: no-repeat;
-	height: 2500px;
-}
+  <style>
+    body {
+       background-color: #fff;
+    }
 
-#container1{
-    height: 1025px;
-    left: -20px;
-    position: absolute;
-    text-align: center;
-    top: -135px;
-    width: 100%;
-}
-.datamap{
-    display: inline-block;
-    overflow: hidden;
-    width: 1025px !important;
-}
-</style>
+    #countryMapContainer{
+       height: 1025px;
+       text-align: center;
+    }
+    
+    .datamap {
+       display: inline-block;
+       overflow: hidden;
+    }
+  </style>
 
-<body>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-<!-- I recommend you host this file on your own, since this will change without warning -->
-<!-- script src="http://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script -->
-<script src="datamaps.all.min.js"></script>
-<script type="text/javascript" src="jquery.js"></script>
-<div id="container1"></div>
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js" integrity="sha384-XXXXXXXX" crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="datamaps.all.min.js"></script>
+    <script src="country-map-client.js"></script>
 
-<script type="text/javascript" src="websocket-client.js"></script>
-
-<script>
-    $(function() {
-	//$('#container1').css('left', - 26 +  window.innerWidth / 2 - 512);
-    window.map = new Datamap({
-        element: document.getElementById('container1'),
-	width: 1024,
-	height: 1025,
-        scope: 'usa',
-        fills: {
-            defaultFill: 'rgb(111, 190, 253)' //any hex, color name or rgb/rgba value
-        },
-        done: function(datamap) {
-        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-          url = "i3a.html?state=" + geography.id;
-          $( location ).attr("href", url);
-        });
-        }
-    });
-});
-  </script>
-
-<!--<button id="connectButton">Connect</button>-->
-<!--<button id="disconnectButton">Disconnect</button>-->
-
-</body>
+    <div class="container-fluid">
+      <div class="row">
+	<div class="col-sm-2">
+	</div>
+	<div class="col-sm-8" id="countryMapContainer">
+	</div>
+	<div class="col-sm-2">
+	</div>
+      </div>
+    </div>
+  </body>
+</html>
