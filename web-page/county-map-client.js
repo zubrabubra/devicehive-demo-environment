@@ -83,7 +83,8 @@ $(function() {
             datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                 url = "i3a.html?state=" + geography.id;
                 //TODO instead open popup window $( location ).attr("href", url);
-            });
+            })
         }
+	});
     WebSocketClient.init();
 });
