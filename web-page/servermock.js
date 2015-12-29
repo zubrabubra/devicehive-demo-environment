@@ -1,3 +1,11 @@
+/**
+ * Created by Sergey on 12/29/2015.
+ */
+
+var ws = require("nodejs-websocket");
+
+var clients = [];
+
 var usStates = {
     "AL": "Alabama",
     "AK": "Alaska",
@@ -59,3 +67,51 @@ var usStates = {
     "WI": "Wisconsin",
     "WY": "Wyoming"
 };
+
+function pickRandomProperty(obj) {
+    var result;
+    var count = 0;
+    for (var prop in obj)
+        if (Math.random() < 1/++count)
+            result = prop;
+    return result;
+};
+
+var sendData = function () {
+
+    var data = JSON.stringify({
+        time: new Date(),
+        state: pickRandomProperty(usStates),
+        pressure: (Math.random() * 20) + 50,
+        temperature: (Math.random() * 20) + 20,
+        count: 1
+    });
+
+    clients.forEach( function(client){
+        client.sendText(data);
+    });
+
+};
+
+setInterval(sendData, 100);
+
+// Scream server example: "hi" -> "HI!!!"
+var server = ws.createServer(function (conn) {
+    var cconn = conn;
+    console.log("New connection");
+
+    clients.push(cconn);
+
+    //conn.on("text", function (str) {
+    //    console.log("Received "+str);
+    //    conn.sendText(str.toUpperCase()+"!!!")
+    //});
+
+    cconn.on("close", function (code, reason) {
+        var idx = clients.indexOf(cconn);
+        if (idx>=0) {
+            clients.splice(idx, 1);
+        }
+    })
+}).listen(9000);
+

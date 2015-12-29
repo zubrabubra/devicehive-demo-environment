@@ -11,14 +11,14 @@ new function() {
         ws.onclose = onClose;
         ws.onmessage = onMessage;
         ws.onerror = onError;
-    }
+    };
     
     var close = function() {
         if (ws) {
             console.log('CLOSING ...');
             ws.close();
         }
-    }
+    };
     
     var onOpen = function() {
         console.log('OPENED:');
@@ -62,7 +62,7 @@ new function() {
     
     var onError = function(event) {
         alert(event.data);
-    }
+    };
     
 
     WebSocketClient = {
@@ -70,7 +70,7 @@ new function() {
             open();
         }
     };
-}
+};
 
 $(function() {
     window.map = new Datamap({
