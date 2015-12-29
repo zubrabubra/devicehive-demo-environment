@@ -21,6 +21,11 @@
        display: inline-block;
        overflow: hidden;
     }
+
+    .header-row {
+    	margin-top: 15px;
+        border-bottom: 1px solid grey;
+    }
   </style>
 
   <body>
@@ -33,14 +38,35 @@
     <script src="county-map-client.js"></script>
 
     <div class="container-fluid">
+      <div class="row header-row">
+        <div class="col-sm-12">
+           <h2>Country State Monitor</h2>
+        </div>
+      </div>
       <div class="row">
-	<div class="col-sm-2">
+	<div class="col-xs-1 col-lg-2">
 	</div>
-	<div class="col-sm-8" id="countryMapContainer">
+	<div class="col-xs-10 col-lg-8" id="countryMapContainer">
 	</div>
-	<div class="col-sm-2">
+	<div class="col-xs-1 col-lg-2">
 	</div>
       </div>
+
+      <div class="row">
+        <div class="col-xs-1 col-lg-2">
+        </div>
+        <div class="col-xs-10 col-lg-8">
+		<table class="table table-hover">
+			<tr><th>State</th><th>State</th><th>State</th></tr>
+  			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
+			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
+			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
+		</table>
+        </div>
+        <div class="col-xs-1 col-lg-2">
+        </div>
+      </div>
+
     </div>
 
 
