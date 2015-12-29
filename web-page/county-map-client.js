@@ -81,8 +81,8 @@ $(function() {
         },
         done: function(datamap) {
             datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                url = "i3a.html?state=" + geography.id;
-                //TODO instead open popup window $( location ).attr("href", url);
+		$("#modal-title").text(usStates[geography.id]);
+		$('#modal-live-state-feed').modal('show');
             })
         }
 	});
