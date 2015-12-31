@@ -1,10 +1,9 @@
 var stateFromQuery = "";
 
 function runChartForFirstTime() {
-                var temperatureArray = new Array();
-                var dewPointArray = new Array();
-                var humidityArray = new Array();
-                var stateFromQuery = "";
+        window.temperatureArray = new Array();
+        window.dewPointArray = new Array();
+        window.humidityArray = new Array();
                 var tempVal = 0;
                 var dewVal = 0;
                 var humidityVal = 0;
@@ -210,5 +209,5 @@ function runChartForFirstTime() {
         }
 
 	StateWebSocketClient.init();
-
+	tick();
 }
