@@ -1,0 +1,14 @@
+{
+  "name": "ws-server-mock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "servermock.js",
+  "scripts": {
+    "start": "node servermock"
+  },
+  "author": "@demon_xxi",
+  "license": "MIT",
+  "dependencies": {
+    "nodejs-websocket": "^1.4.1"
+  }
+}

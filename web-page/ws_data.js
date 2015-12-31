@@ -11,14 +11,14 @@ new function() {
 		ws.onmessage = onMessage;
 		ws.onerror = onError;
 		tick();
-	}
+	};
 	
 	var close = function() {
 		if (ws) {
 			console.log('CLOSING ...');
 			ws.close();
 		}
-	}
+	};
 	
 	var onOpen = function() {
 		console.log('OPENED:');
@@ -33,7 +33,7 @@ new function() {
 		var temp = "temperature";
 		var pressure = "pressure";
 		var count = "count";
-		var state = "state"
+		var state = "state";
 		var data = JSON.parse(event.data);
         if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
 			temperatureArray.push(transformFromCtoF(data[temp] / data[count]));
@@ -59,14 +59,14 @@ new function() {
 	
 	var onError = function(event) {
 		alert(event.data);
-	}
+	};
 	
 	WebSocketClient = {
 		init: function() {			
 			open();
 		}
 	};
-}
+};
 
 $(function() {
 	WebSocketClient.init();
