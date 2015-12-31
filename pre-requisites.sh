@@ -10,9 +10,12 @@ sudo apt-get install oracle-java8-installer
 
 echo "Installing core apps."
 
-sudo apt-get install make nginx gcc g++ git tar gzip curl
+sudo apt-get install make postgresql nginx gcc g++ git tar gzip curl
 
 cd ..
+
+sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password '12345';"
+sudo -u postgres createdb mydb
 
 echo "Downloading Components"
 curl http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.10-0.8.2.2.tgz | gunzip > kafka_2.10-0.8.2.2.tar
