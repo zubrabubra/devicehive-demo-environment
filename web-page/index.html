@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/css/tether.min.css"  crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css"  crossorigin="anonymous">
+    <link href="live-chart.css">
+    <title>Dasboard Monitor</title>
   </head>
 
   <style>
@@ -83,6 +85,8 @@
     <script src="datamaps.all.min.js"></script>
 
     <script src="county-map-client.js"></script>
+    <script src="state-details.js"></script>
+    <script src="ws_data.js"></script>
 
     <div class="container-fluid">
       <div class="row header-row">
@@ -126,6 +130,10 @@
       </div>
       <div class="modal-body">
         <p>TODO here should be chart with live data feed.</p>
+
+	<div class="graph2" id="temperature">temperature chart</div>
+	<div class="graph2" id="humidity">humidity chart</div>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

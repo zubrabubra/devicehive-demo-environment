@@ -132,8 +132,12 @@ $(function() {
         },
         done: function(datamap) {
             datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+		window.stateFromQuery = geography.id;
 		$("#modal-title").text(usStates[geography.id]);
 		$('#modal-live-state-feed').modal('show');
+		var ff = runChartForFirstTime;
+		runChartForFirstTime = function() {};
+		ff();
             })
         }
 	});

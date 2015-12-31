@@ -10,8 +10,8 @@ new function() {
 		ws.onclose = onClose;
 		ws.onmessage = onMessage;
 		ws.onerror = onError;
-		tick();
-	};
+//		tick();
+	}
 	
 	var close = function() {
 		if (ws) {
@@ -35,7 +35,7 @@ new function() {
 		var count = "count";
 		var state = "state";
 		var data = JSON.parse(event.data);
-        if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
+        	if(data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
 			temperatureArray.push(transformFromCtoF(data[temp] / data[count]));
 		}
 		if(data[pressure] && data[temp] && data[count] && data[count] != 0 && stateFromQuery.localeCompare(data[state]) == 0){
@@ -61,13 +61,10 @@ new function() {
 		alert(event.data);
 	};
 	
-	WebSocketClient = {
+	StateWebSocketClient = {
 		init: function() {			
 			open();
 		}
 	};
 };
 
-$(function() {
-	WebSocketClient.init();
-});
