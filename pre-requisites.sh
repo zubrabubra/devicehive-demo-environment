@@ -10,7 +10,7 @@ sudo apt-get install oracle-java8-installer
 
 echo "Installing core apps."
 
-sudo apt-get install nginx gcc git tar gzip curl
+sudo apt-get install make nginx gcc g++ git tar gzip curl
 
 cd ..
 
@@ -34,13 +34,13 @@ cd devicehive-java-server
 cd ../devicehive-demo-environment
 
 cd akka-streams
-./activator
+./activator assembly
 
 cd ../ws-client
 make
 
 cd ../spark-streaming
-./activator
+./activator assembly
 
 cd ../web-page
 sudo cp * /usr/share/nginx/html/
