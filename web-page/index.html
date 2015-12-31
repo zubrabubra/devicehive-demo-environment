@@ -27,6 +27,11 @@
     	margin-top: 15px;
         border-bottom: 1px solid grey;
     }
+
+    table th {
+        text-transform: capitalize;
+    }
+
   </style>
 
   <body>
@@ -35,8 +40,50 @@
     <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js" crossorigin="anonymous"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="datamaps.all.min.js"></script>
+    <script src="//fb.me/react-with-addons-0.14.3.js"></script>
+    <script src="//fb.me/react-dom-0.14.3.js"></script>
+
+
     <script src="states_hash.js"></script>
+
+    <script type="text/javascript">
+
+        var Table = React.createClass({displayName: 'Table',
+            render: function() {
+
+                var _self = this;
+
+                var thead = React.DOM.thead({key: "head"},
+                        React.DOM.tr({key:"1"},
+                                this.props.cols.map(function (col, idx) {
+                                    return React.DOM.th({key: 'c'+idx}, col);
+                                })));
+
+                var rows = [];
+                for(var state in this.props.rows){
+                    rows.push(React.DOM.tr({key: 'r'+state},
+                            _self.props.cols.map(function (col, idxc) {
+                                return React.DOM.td({key: 'cell-'+state+'-'+idxc},  _self.props.rows[state][col] || "");
+                            })
+                    ));
+                }
+
+                var tbody = React.DOM.thead({key: "body"}, rows);
+
+                return React.DOM.table({className: "table table-hover"}, [thead, tbody]);
+//                return React.createElement("div", null, "Hello ", this.props.name);
+            }
+        });
+
+        window.states = {
+
+        };
+
+
+    </script>
+
+    <script src="datamaps.all.min.js"></script>
+
     <script src="county-map-client.js"></script>
 
     <div class="container-fluid">
@@ -53,16 +100,16 @@
 	<div class="col-xs-1 col-lg-2">
 	</div>
       </div>
-
       <div class="row">
         <div class="col-xs-1 col-lg-2">
         </div>
-        <div class="col-xs-10 col-lg-8">
+        <div class="col-xs-10 col-lg-8" id="detailstable">
 		<table class="table table-hover">
-			<tr><th>State</th><th>State</th><th>State</th></tr>
-  			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
-			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
-			<tr><td>Alaska</td><td>10</td><td>10</td></tr>
+			<tr><th>State</th><th>Temperature</th><th>Pressure</th><th>Humidity</th></tr>
+  			<tr><td>Alaska</td><td>10</td><td>10</td><td>10</td></tr>
+			<tr><td>New York</td><td>10</td><td>10</td><td>10</td></tr>
+            <tr><td>Washington</td><td>10</td><td>10</td><td>10</td></tr>
+			<tr><td>Florida</td><td>10</td><td>10</td><td>10</td></tr>
 		</table>
         </div>
         <div class="col-xs-1 col-lg-2">
@@ -89,6 +136,9 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+    <script type="text/javascript">
+        window.table = ReactDOM.render(React.createElement(Table, {rows: window.states, cols:["state", "temperature", "pressure"]}), document.getElementById("detailstable"));
+    </script>
 
   </body>
 </html>

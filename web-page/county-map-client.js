@@ -15,17 +15,17 @@ new function() {
     
     var close = function() {
         if (ws) {
-            console.log('CLOSING ...');
+            console.log('CLOSING WS...');
             ws.close();
         }
     };
     
     var onOpen = function() {
-        console.log('OPENED:');
+        console.log('WS OPENED');
     };
     
     var onClose = function() {
-        console.log('CLOSED:');
+        console.log('WS CLOSED');
         ws = null;
     };
 
@@ -53,10 +53,14 @@ new function() {
         //.interpolate(d3.interpolateHcl);
 
         var avgPressure = (data["count"] === 0) ? data["pressure"] : data["pressure"]  / data["count"];
+        var avgTemperature = (data["count"] === 0) ? data["temperature"] : data["temperature"]  / data["count"];
         //console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
         dataMap[county] = color(data.temperature / data.count);// color(getDewPoint(avgPressure , data["temperature"]  / data["count"]));
 
-        console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + data.temperature / data.count + " " + dataMap[county]);
+        window.states[data.state] = {state: usStates[data.state], temperature: Math.round10(avgTemperature, -1), pressure: Math.round10(avgPressure, -2)};
+        window.table.forceUpdate();
+
+        //console.log(getDewPoint(avgPressure , data["temperature"]  / data["count"]) + " " + data.temperature / data.count + " " + dataMap[county]);
         map.updateChoropleth(dataMap);
     };
     
@@ -73,6 +77,53 @@ new function() {
 };
 
 $(function() {
+
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param {String}  type  The type of adjustment.
+     * @param {Number}  value The number.
+     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number} The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function(value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+    // Decimal floor
+    if (!Math.floor10) {
+        Math.floor10 = function(value, exp) {
+            return decimalAdjust('floor', value, exp);
+        };
+    }
+    // Decimal ceil
+    if (!Math.ceil10) {
+        Math.ceil10 = function(value, exp) {
+            return decimalAdjust('ceil', value, exp);
+        };
+    }
+
     window.map = new Datamap({
         element: document.getElementById('countryMapContainer'),
         scope: 'usa',
